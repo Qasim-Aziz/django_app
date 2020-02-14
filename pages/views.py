@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from pages.models import Contact
 
 # Create your views here.
 def home(request):
@@ -10,12 +11,17 @@ def about(request):
 
 def contact(request):
     if(request.method == 'POST'):
-        email = request.POST ['email']
-        address = request.POST['address']
-        city = request.POST['city']
-        zipcode = request.POST['zip']
-        return render(request, 'contact.html', {'title': 'contact Page Title', 'email' : email, 'address' : address, 'city' : city, 'zipcode': zipcode } )
-    return render(request, 'contact.html',{'title': 'contact Page Title'})
+        data = Contact(
+            name=request.POST['name'],
+            email=request.POST['email'],
+            address=request.POST['address'],
+            city=request.POST['city'],
+            zipcode=request.POST['zipcode']
+        )
+        data.save()
+    cnt= Contact.objects.all()
+    return render(request, 'contact.html', {'title': 'contact Page Title','rows' :cnt } )
+    
 
 def member(request, id):
     return HttpResponse("<h1>Team member ID: {}" .format(id))
